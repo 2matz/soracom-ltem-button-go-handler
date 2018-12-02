@@ -26,11 +26,17 @@ func HandleRequest(ctx context.Context, event oneclick.Event) (result string, er
 	slackWebhookURL, err = url.ParseRequestURI(u)
 	if err != nil {
 		result = ""
-		err = fmt.Errorf("%s", "Slack Webhook URL is incorrect format.")
+		err = fmt.Errorf("%s, %v", "Slack Webhook URL is incorrect format.", err)
 		return
 	}
 
-	clickType := event.GetClickType()
+	clickType, err := event.GetClickType()
+	if err != nil {
+		result = ""
+		err = fmt.Errorf("%v", err)
+		return
+	}
+
 	userName := event.GetProjectName()
 	if userName == "" {
 		userName = "SORACOM LTE-M Button"

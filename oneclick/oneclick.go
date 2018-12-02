@@ -1,5 +1,18 @@
 package oneclick
 
+import (
+	"fmt"
+)
+
+const (
+	// SingleClick is pressing a button once.
+	SingleClick = "SINGLE"
+	// DoubleClick is pressing a button twice quickly.
+	DoubleClick = "DOUBLE"
+	// LongClick is press and keep holding down a button over 1.2 secs.
+	LongClick = "LONG"
+)
+
 type (
 	// Event ...
 	Event struct {
@@ -50,8 +63,18 @@ type (
 )
 
 // GetClickType return click type of button click event that one of "SINGLE", "DOUBLE" or "LONG".
-func (e *Event) GetClickType() string {
-	return e.DeviceEvent.ButtonClicked.ClickType
+func (e *Event) GetClickType() (string, error) {
+	switch clickType := e.DeviceEvent.ButtonClicked.ClickType; clickType {
+	case SingleClick:
+		return SingleClick, nil
+	case DoubleClick:
+		return DoubleClick, nil
+	case LongClick:
+		return LongClick, nil
+	default:
+		return "", fmt.Errorf("%s", "Click type is not defined.")
+	}
+
 }
 
 // GetDeviceID return device serial number of button.
